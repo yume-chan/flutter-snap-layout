@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +57,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  static const platform = MethodChannel('samples.flutter.dev/snap');
 
   void _incrementCounter() {
     setState(() {
@@ -115,11 +117,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: MouseRegion(
+          onEnter: (event) async {
+            await platform.invokeMethod('maximumButtonEnter');
+            debugPrint("maximumButtonEnter");
+          },
+          onExit: (event) async {
+            await platform.invokeMethod('maximumButtonExit');
+            debugPrint("maximumButtonExit");
+          },
+          child: FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          )), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
